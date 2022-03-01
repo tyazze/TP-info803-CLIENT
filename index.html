@@ -8,85 +8,7 @@
 
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="node_modules/jquery.soap/jquery.soap.js"></script>
-    
-    <script>
-    // Soap
-    /*$.soap({
-        url: 'http://localhost:8000/',
-        method: 'autonomy',
-
-        data: {
-            car: 'SmartFor2'
-        },
-
-        success: function (soapResponse) {
-            // do stuff with soapResponse
-            // if you want to have the response as JSON use soapResponse.toJSON();
-            // or soapResponse.toString() to get XML string
-            // or soapResponse.toXML() to get XML DOM
-            log(soapResponse.toJSON());
-        },
-        error: function (SOAPResponse) {
-            // show error
-        }
-    });*/
-
-    var request_url = 'http://localhost:8000/autonomy?name=SmartFor2';
-    var jdata = 'none'
-    $.ajax( {
-      type:'Get',
-      url:request_url,
-      dataType: "html",                
-      crossDomain : true,
-      success:function(data) {
-    alert(data);
-      },
-      error: function()
-      {
-      alert("fail");
-      },
-
-    });
-
-    // Initialize and add the map
-    var directionsService
-    var directionsRenderer
-    
-    function initMap() {
-        directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer();
-        var lyon = new google.maps.LatLng(45.764, 4.835);
-        var mapOptions = {
-            zoom:7,
-            center: lyon
-        }
-        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-        directionsRenderer.setMap(map);
-    }
-
-    function calcRoute() {
-        var start = document.getElementById('start').value;
-        var end = document.getElementById('end').value;
-        var request = {
-            origin: start,
-            destination: end,
-            travelMode: 'DRIVING'
-        };
-        directionsService.route(request, function(result, status) {
-        if (status == 'OK') {
-            directionsRenderer.setDirections(result);
-            var distance = 0;
-            result.routes[0].legs.forEach(leg => {
-                distance = distance + leg.distance.value;
-            });
-            distance = Math.floor(distance/1000);
-            var autonomy = 160;
-            var chargeTime = 1;
-            durationCalculation(distance, autonomy, chargeTime);
-        }
-        });
-    }
-    </script>
+    <script src="scripts/app.js"></script>
 </head>
 <body>
     <h1>Selecteur de trajet</h1>
@@ -120,17 +42,14 @@
         <input type="submit" onclick="calcRoute();">
     </div>
 
+    <!--div>
+        <label></label>
+        <input>
+    </div-->
+
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0PUouViTQkJz6K7yMnfYlYQXBZKywCD4&callback=initMap&libraries=&v=weekly"
         async
     ></script>
-
-    <script>
-        const durationCalculation = async (distance, autonomy, chargeTime) => {
-            const response = await fetch('http://localhost:8080/REST-1.0-SNAPSHOT/api/travel-duration/' + chargeTime + '&' + autonomy + '&' + distance);
-            const data = await response.json(); //extract JSON from the http response
-            document.getElementById("calculationResult").innerHTML = "Durée estimée du trajet choisi : " + data.duration + " heures";
-        }
-    </script>
 </body>
 </html>
